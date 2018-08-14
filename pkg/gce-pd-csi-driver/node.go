@@ -161,7 +161,7 @@ func (ns *GCENodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStage
 		return nil, status.Error(codes.InvalidArgument, "NodeStageVolume Volume Capability must be provided")
 	}
 
-	_, volumeName, err := common.SplitZoneNameId(volumeID)
+	_, volumeName, partition, err := common.SplitZoneNameId(volumeID)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +170,6 @@ func (ns *GCENodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStage
 
 	// Part 1: Get device path of attached device
 	// TODO: Get real partitions
-	partition := ""
 
 	devicePaths := ns.DeviceUtils.GetDiskByIdPaths(volumeName, partition)
 	devicePath, err := ns.DeviceUtils.VerifyDevicePath(devicePaths)
